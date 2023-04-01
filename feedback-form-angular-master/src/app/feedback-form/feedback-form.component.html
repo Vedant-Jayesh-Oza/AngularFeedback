@@ -1,0 +1,143 @@
+<form novalidate [formGroup]="feedbackForm" (ngSubmit)="submitFeedbackForm()">
+  <section class="customer-name">
+    <h1>Full Name</h1>
+    <input type="text" placeholder="Enter your name here" formControlName="customerName">
+    <div *ngIf="customerNameChanged" class="errors">
+      <i>{{customerNameControl.value}}</i> is not a valid name
+    </div>
+    <div *ngIf="!customerNameChanged && customerNameControl.value && !customerNameControl.errors">
+      Welcome {{customerNameControl.value}}
+    </div>
+    <div *ngIf="customerNameControl.errors" class="errors">
+      <div *ngIf="customerNameControl.errors.required">
+        Please enter your name. This is a mandatory field.
+      </div>  
+      <div *ngIf="customerNameControl.errors.minlength">
+        Please enter atleast {{customerNameControl.errors.minlength.requiredLength}} characters
+      </div>  
+    </div>
+  </section>
+  <section class="gender">
+    <h1>Gender</h1>
+    <ul>
+      <li>
+        <input id="genderMale" type="radio" value="Male" formControlName="gender">
+        <label for="genderMale">Male</label>
+      </li>
+      <li>
+        <input id="genderFemale" type="radio" name="gender" value="Female" formControlName="gender">
+        <label for="genderFemale">Female</label>
+      </li>
+    </ul>
+  </section>
+  <section class="product-purchased">
+    <h1>Product purchased</h1>
+    <label>I own a:</label>
+    <select formControlName="productPurchased">
+      <option value=""></option>
+      <option value="Refrigerator">Refrigerator</option>
+      <option value="Washing Machine">Washing Machine</option>
+      <option [ngValue]="tvItem">Telivision</option>
+      <option value="Old Washing Machine">Old Washing Machine</option>
+    </select>
+  </section>
+  <section class="detailed-feedback" *ngIf="feedbackForm.get('gender').value=='Female'">
+    <h1>Detailed Feedback (Only for Female)</h1>
+    <section>
+      <h1>Product quality</h1>
+      <ul>
+        <li>
+          <input id="productQualityAwesome" type="radio" value="Awesome" formControlName="productQuality">
+          <label for="productQualityAwesome">Awesome</label>
+        </li>
+        <li>
+          <input id="productQualityGood" type="radio" value="Good" formControlName="productQuality">
+          <label for="productQualityGood">Good</label>
+        </li>
+        <li>
+          <input id="productQualityWorst" type="radio" value="Worst" formControlName="productQuality">
+          <label for="productQualityWorst">Worst</label>
+        </li>
+      </ul>
+      <div *ngIf="feedbackForm.errors" class="errors">
+        <div *ngIf="feedbackForm.errors.relationFail">
+          Can't give feedback<br> for old product.
+        </div>
+      </div>
+    </section>
+    <section formGroupName="delivery">
+      <h1>Delivery</h1>
+      <ul>
+        <li>
+          <input id="delOnTime" type="checkbox" formControlName="delOnTime">
+          <label for="delOnTime">On time?</label>
+        </li>
+        <li>
+          <input id="damagedProduct" type="checkbox" formControlName="damagedProduct">
+          <label for="damagedProduct">Damaged product?</label>
+        </li>
+        <li>
+          <input id="extraCharge" type="checkbox" formControlName="extraCharge">
+          <label for="extraCharge">Extra charge?</label>
+        </li>
+      </ul>
+    </section>
+    <section formGroupName="installation">
+      <h1>Installation</h1>
+      <ul>
+        <li>
+          <input id="properInstallation" type="checkbox" formControlName="properInstallation">
+          <label for="properInstallation">Proper installation?</label>
+        </li>
+        <li>
+          <input id="easyUserManual" type="checkbox" formControlName="easyUserManual">
+          <label for="easyUserManual">Easy user manual?</label>
+        </li>
+        <li>
+          <input id="properTraining" type="checkbox" formControlName="properTraining">
+          <label for="properTraining">Proper training?</label>
+        </li>
+      </ul>
+    </section>
+    <section formGroupName="maintenance">
+      <h1>Maintenance</h1>
+      <ul>
+        <li>
+          <input id="periodicMaintenance" type="checkbox" formControlName="periodicMaintenance">
+          <label for="periodicMaintenance">Periodic Maintenance?</label>
+        </li>
+        <li>
+          <input id="issuesFixed" type="checkbox" formControlName="issuesFixed">
+          <label for="issuesFixed">Issues Fixed?</label>
+        </li>
+        <li>
+          <input id="frequentIssues" type="checkbox" formControlName="frequentIssues">
+          <label for="frequentIssues">Frequent issues?</label>
+        </li>
+      </ul>
+    </section>
+  </section>
+  <section>
+    <h1>Any Suggestions?</h1>
+    <textarea formControlName="suggestions"></textarea>
+  </section>
+  <section class="more-feedbacks" formArrayName="morefeedbacks">
+    <h1>More feedback?</h1>
+    <ul>
+      <li *ngFor="let item of morefeedbacksControls.controls; let i = index">
+        <input type="text" formControlName="{{i}}">
+        <button type="button" title="Delete Feedback" (click)="deleteMoreFeedback(i)">Delete</button>
+      </li>
+    </ul>
+    <button type="button" (click)="addMoreFeedback()">Add a Feedback</button>
+  </section>
+  <button type="submit" [disabled]='!feedbackForm.valid'>Submit Feedback</button>
+  <button type="button" (click)="clearForm()">Clear Form</button>
+</form>
+
+<!-- Form Data -->
+<section>
+  <hr>
+  <h1>Developers area</h1>
+  <pre>{{ feedbackForm.value | json }}</pre>
+</section>
